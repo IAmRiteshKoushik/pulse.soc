@@ -16,7 +16,13 @@ import (
 	"github.com/IAmRiteshKoushik/pulse/sse"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
+
+func init() {
+	prometheus.MustRegister(mw.RequestCount, mw.RequestLatency)
+}
 
 func StartApp() {
 	failMsg := "Could not initialize app\n%w"
@@ -82,6 +88,7 @@ func StartApp() {
 	router := gin.New()
 	router.Use(mw.RecoveryMiddleware)
 	router.Use(gin.Logger())
+	// router.Use(mw.MonitorMiddleware)
 	router.Use(cors.New(cors.Config{
 		// Webhook domain hardcoded for now, move to array based environment
 		// variable later
@@ -102,6 +109,9 @@ func StartApp() {
 			c.Request.Method, c.FullPath(),
 		))
 	})
+
+	// Prometheus endpoint, not exposed externally via Nginx
+	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	v1 := router.Group("/api/v1")
 

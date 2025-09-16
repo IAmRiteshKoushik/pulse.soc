@@ -1,4 +1,5 @@
 services:
+
   # Primary database
   postgres:
     image: postgres:latest
@@ -23,7 +24,7 @@ services:
     volumes:
       - valkey_data:/data
     networks:
-      - valkey_network
+      - pulse_network
 
   # UI for Valkey (cache)
   insight:
@@ -38,12 +39,53 @@ services:
       - VALKEY_HOST=valkey
       - VALKEY_PORT=6379
     networks:
-      - valkey_network
+      - pulse_network
+
+  # Monitoring
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - "9090:9090"
+  #   networks:
+  #     - pulse_network
+
+  # Observability
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #     - ./grafana-datasources.yml:/etc/grafana/provisioning/datasources.yml
+  #   networks:
+  #     - pulse_network
+
+  # Grafana-compliant logs aggregator
+  # loki:
+  #   image: grafana/loki:latest
+  #   ports:
+  #     - "3100:3100"
+  #   networks:
+  #     - pulse_network
+
+  # Push logs from the file into loki
+  # promtail:
+  #   image: grafana/promtail:latest
+  #   volumes:
+  #     - ./promtail-config.yml:/etc/promtail/config.yml
+  #     - .:/logs
+  #   networks:
+  #       - pulse_network
 
 networks:
-  valkey_network:
+  pulse_network:
     driver: bridge
 
 volumes:
   postgres_data:
   valkey_data:
+  # grafana_data:
