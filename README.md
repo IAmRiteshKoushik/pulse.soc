@@ -6,56 +6,54 @@ Season of Code platform.
 ### Setup Steps
 
 1. Clone the repository
-```bash
-git clone https://github.com/Infinite-Sum-Games/pulse
-# or
-gh repo clone Infinite-Sum-Games/pulse
-```
+    ```bash
+    git clone https://github.com/Infinite-Sum-Games/pulse
+    # or
+    gh repo clone Infinite-Sum-Games/pulse
+    ```
 2. Setup a PostgreSQL database. You can either use [Neon](https://neon.tech) 
 and grab the connection string from there or use `docker compose`. If you are 
 using compose, then run the following command:
-```bash
-# For newer versions with Docker Desktop available
-docker compose up -d
-# For older versions with docker-cli available
-docker-compose up -d
-```
-This should start a container named `pulse-postgres`. Your database connection 
+    ```bash
+    # For newer versions with Docker Desktop available
+    docker compose up -d
+    # For older versions with docker-cli available
+    docker-compose up -d
+    ```
+    This should start a container named `pulse-postgres`. Your database connection 
 string is the default string provided in `.env.example`
 
-2. Fill out the `environment variables` and rename the file `.env.example` as 
-`.env`.
+3. Update the `GOOSE_DBSTRING` in `.env` with the database url.
 
-3. Run the database migrations as follows:
-```bash
-# Download the tool from https://github.com/pressly/goose
-# 1. For creating tables
-make up
-# 2. For adding seed data
-make seed
-# 3. For cleaning and deleting all tables
-make down
-```
-4. Generate all the database helper functions by running:
-```bash
-# Download the tool from https://github.com/sqlc-dev/sqlc
-sqlc generate
-```
-5. For development you can get live-reloading features by using:
-```bash
-# Download the tool from https://github.com/air-verse/air
-air
-```
-6. For building the project and running use:
-```bash
-# Install make in your environment
-make run
-# Alternatively for running without building
-go run main.go
-# For getting a build and then running
-go build -o bin/pulse
-./bin/pulse
-```
+4. Rename the `config.toml.sample` to `config.toml` and fill out the environment variables.
+
+5. Make sure you have `goose` installed for db migrations. You can install it from here: https://github.com/pressly/goose
+
+6. Run the database migrations as follows:
+    ```bash
+    # 1. For creating tables
+    make up
+    # 2. For adding seed data
+    make seed
+    ```
+
+7. For building the project and running use:
+    ```bash
+    make run
+    ```
+    ```bash
+    # Alternatively for running without building
+    go run main.go
+    # For getting a build and then running
+    go build -o bin/pulse
+    ./bin/pulse
+    ```
+
+8. For development you can get live-reloading features by using:
+    ```bash
+    # Download the tool from https://github.com/air-verse/air
+    air
+    ```
 
 > The development of this repository has taken place in a linux environment. 
 It would be easier if a Linux (or) Unix (or) WSL environment is used. Otherwise
