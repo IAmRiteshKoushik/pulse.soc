@@ -7,9 +7,9 @@ Season of Code platform.
 
 1. Clone the repository
     ```bash
-    git clone https://github.com/Infinite-Sum-Games/pulse
+    git clone https://github.com/IAmRiteshKoushik/pulse.soc.git
     # or
-    gh repo clone Infinite-Sum-Games/pulse
+    gh repo clone IAmRiteshKoushik/pulse.soc
     ```
 2. Setup a PostgreSQL database. You can either use [Neon](https://neon.tech) 
 and grab the connection string from there or use `docker compose`. If you are 
