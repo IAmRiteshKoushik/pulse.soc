@@ -22,7 +22,8 @@ INSERT INTO badge_info (name, description) VALUES
 ('Zeppelin of Mighty Gargantuaness (ZOMG)', 'Get a PR marked for High-Impact'),
 ('Doc Champ', 'Get 2 documentation Pull Requests merged'),
 ('Pirate of Issue-bians', 'Contribute to 10 issues in the same language'),
-('Enamoured', 'Got a PR accepted every week for a month');
+('Enamoured', 'Got a PR accepted every week for a month')
+ON CONFLICT (name) DO NOTHING;
 -- +goose StatementEnd
 
 -- +goose StatementBegin
@@ -47,7 +48,8 @@ INSERT INTO maintainers (ghUsername, full_name) VALUES
 ('akshayxml', 'Akshay M'),
 ('nasacode1', 'Maanasa Ganesh'),
 ('aniket2909', 'Aniket Sharma'),
-('SakethRamanKS', 'Saketh Raman');
+('SakethRamanKS', 'Saketh Raman')
+ON CONFLICT (ghUsername) DO NOTHING;
 -- +goose StatementEnd
 
 -- +goose StatementBegin
@@ -453,5 +455,6 @@ INSERT INTO repository
   'https://github.com/aniket2909/Hand-Detector',
   '{"aniket2909", "Ashrockzzz2003"}',
   '{"Python", "Matplotlib", "Numpy", "OpenCV"}',
-  false);
+  false)
+ON CONFLICT (url) DO NOTHING;
 -- +goose StatementEnd
