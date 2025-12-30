@@ -199,21 +199,27 @@ func (q *Queries) CreateUserAccountQuery(ctx context.Context, db DBTX, arg Creat
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, email, password 
+SELECT id, email, password, COALESCE(ghusername, '') AS ghusername
 FROM user_account 
 WHERE email = $1 LIMIT 1
 `
 
 type GetUserByEmailRow struct {
-	ID       int32  `json:"id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID         int32  `json:"id"`
+	Email      string `json:"email"`
+	Password   string `json:"password"`
+	Ghusername string `json:"ghusername"`
 }
 
 func (q *Queries) GetUserByEmail(ctx context.Context, db DBTX, email string) (GetUserByEmailRow, error) {
 	row := db.QueryRow(ctx, getUserByEmail, email)
 	var i GetUserByEmailRow
-	err := row.Scan(&i.ID, &i.Email, &i.Password)
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.Ghusername,
+	)
 	return i, err
 }
 

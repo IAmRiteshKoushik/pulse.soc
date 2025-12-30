@@ -17,7 +17,7 @@ LEFT JOIN solutions s
 LEFT JOIN issue_claims ic 
   ON ic.ghUsername = ua.ghUsername
 LEFT JOIN issues i 
-  ON i.id = ic.issue_id 
+  ON i.url = ic.issue_url 
   AND i.resolved = false 
   AND ic.elapsed_on > NOW()
 LEFT JOIN badge_dispatch bd

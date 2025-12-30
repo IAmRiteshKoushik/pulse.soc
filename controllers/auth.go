@@ -276,14 +276,14 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := pkg.CreateToken("", user.Email, "access_token")
+	accessToken, err := pkg.CreateToken(user.Ghusername, user.Email, "access_token")
 	if err != nil {
 		cmd.Log.Error(fmt.Sprintf("Failed to generate token for %s", user.Email), err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 		return
 	}
 
-	refreshToken, err := pkg.CreateToken("", user.Email, "refresh_token")
+	refreshToken, err := pkg.CreateToken(user.Ghusername, user.Email, "refresh_token")
 	if err != nil {
 		cmd.Log.Error(fmt.Sprintf("Failed to generate refresh token for %s", user.Email), err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
@@ -294,6 +294,7 @@ func LoginUser(c *gin.Context) {
 		"message":      "Login successful",
 		"accessToken":  accessToken,
 		"refreshToken": refreshToken,
+		"ghUsername":   user.Ghusername,
 	})
 
 	cmd.Log.Info(fmt.Sprintf("[SUCCESS]: User logged in: %s", user.Email))

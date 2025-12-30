@@ -86,7 +86,7 @@ INSERT INTO user_account (
 ) RETURNING first_name, last_name, email;
 
 -- name: GetUserByEmail :one
-SELECT id, email, password 
+SELECT id, email, password, COALESCE(ghusername, '') AS ghusername
 FROM user_account 
 WHERE email = $1 LIMIT 1;
 
