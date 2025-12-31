@@ -2,15 +2,23 @@
 SELECT EXISTS
   (
     SELECT 1 FROM repository
-    WHERE id = $1
+    WHERE id = $1 AND on_display = TRUE
     LIMIT 1
 );
 
 -- name: FetchAllProjectsQuery :many
 SELECT 
-  id, name, description, url, maintainers, tags, is_internal
+  id, 
+  name, 
+  description, 
+  url, 
+  maintainers, 
+  tags, 
+  is_internal
 FROM 
-  repository;
+  repository
+WHERE
+  on_display = TRUE;
 
 -- name: FetchAllIssuesByProjectIdQuery :many
 SELECT
@@ -18,6 +26,8 @@ SELECT
   i.title AS title,
   i.url AS issue_url,
   i.updated_at AS last_update,
+  i.bounty_promised AS bounty,
+  i.difficulty AS difficulty,
   COALESCE(
     JSON_AGG(
       JSON_BUILD_OBJECT(
@@ -28,11 +38,11 @@ SELECT
     ) FILTER (WHERE c.id IS NOT NULL),
   '[]'::JSON
   ) AS claimants
+
 FROM issues i
-LEFT JOIN
-  issue_claims AS c ON c.issue_url = i.url
-JOIN
-  repository r ON i.repoUrl = r.url
+
+LEFT JOIN issue_claims AS c ON c.issue_url = i.url
+LEFT JOIN repository r ON i.repoUrl = r.url
 WHERE 
   i.resolved = false
   AND r.id = $1

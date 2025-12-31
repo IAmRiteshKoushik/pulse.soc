@@ -32,15 +32,16 @@ type BountyLog struct {
 }
 
 type Issue struct {
-	ID         uuid.UUID        `json:"id"`
-	Title      string           `json:"title"`
-	Repourl    string           `json:"repourl"`
-	Url        string           `json:"url"`
-	Tags       []string         `json:"tags"`
-	Difficulty pgtype.Text      `json:"difficulty"`
-	Resolved   pgtype.Bool      `json:"resolved"`
-	CreatedAt  pgtype.Timestamp `json:"created_at"`
-	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+	ID             uuid.UUID        `json:"id"`
+	Title          string           `json:"title"`
+	Repourl        string           `json:"repourl"`
+	Url            string           `json:"url"`
+	Tags           []string         `json:"tags"`
+	Difficulty     string           `json:"difficulty"`
+	Resolved       pgtype.Bool      `json:"resolved"`
+	CreatedAt      pgtype.Timestamp `json:"created_at"`
+	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
+	BountyPromised int32            `json:"bounty_promised"`
 }
 
 type IssueClaim struct {
@@ -58,16 +59,16 @@ type Maintainer struct {
 }
 
 type Repository struct {
-	ID             uuid.UUID        `json:"id"`
-	Name           string           `json:"name"`
-	Description    string           `json:"description"`
-	Url            string           `json:"url"`
-	Maintainers    []string         `json:"maintainers"`
-	Tags           []string         `json:"tags"`
-	IsInternal     pgtype.Bool      `json:"is_internal"`
-	InstallationID pgtype.Int8      `json:"installation_id"`
-	CreatedAt      pgtype.Timestamp `json:"created_at"`
-	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
+	ID          uuid.UUID        `json:"id"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	Url         string           `json:"url"`
+	Maintainers []string         `json:"maintainers"`
+	Tags        []string         `json:"tags"`
+	IsInternal  pgtype.Bool      `json:"is_internal"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+	OnDisplay   bool             `json:"on_display"`
 }
 
 type Solution struct {
