@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS issues(
   updated_at TIMESTAMP DEFAULT NOW(),
 
   CONSTRAINT "issues_pkey" PRIMARY KEY (id),
+
   CONSTRAINT "issues_repourl_fkey"
     FOREIGN KEY (repoUrl)
       REFERENCES repository(url)
@@ -98,6 +99,7 @@ CREATE TABLE IF NOT EXISTS issue_claims(
   elapsed_on TIMESTAMP NOT NULL,
 
   CONSTRAINT "issue_claims_pkey" PRIMARY KEY (id),
+
   CONSTRAINT "issue_claims_ghUsername_fkey"
     FOREIGN KEY (ghUsername)
       REFERENCES user_account(ghUsername)
