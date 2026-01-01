@@ -53,6 +53,31 @@ func FetchLeaderboard(c *gin.Context) {
 		return
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	conn, err := cmd.DBPool.Acquire(ctx)
+	if err != nil {
+		pkg.DbError(c, err)
+		return
+	}
+	defer conn.Release()
+
+	q := db.New()
+	zeroes, err := q.FetchUsersWithNoContributionsQuery(ctx, conn)
+	if err != nil {
+		pkg.DbError(c, err)
+		return
+	}
+
+	for _, z := range zeroes {
+		leaderboard = append(leaderboard, pkg.ParticipantGlobal{
+			Username: z.GithubUsername.String,
+			Bounty:   fmt.Sprintf("%d", z.Bounty),
+			Count:    fmt.Sprintf("%d", z.Solutions),
+		})
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message":     "Leaderboard fetched successfully",
 		"leaderboard": leaderboard,
