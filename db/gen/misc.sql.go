@@ -17,7 +17,7 @@ SELECT
     WHEN middle_name IS NULL THEN first_name || ' ' || last_name
     ELSE first_name || ' ' || middle_name || ' ' || last_name
   END as full_name,
-  ghUsername as github_username,
+  ghUsername AS github_username,
   0 as bounty,
   0 as solutions
 FROM
@@ -48,6 +48,52 @@ func (q *Queries) FetchParticipantListQuery(ctx context.Context, db DBTX) ([]Fet
 			&i.Bounty,
 			&i.Solutions,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const fetchUsersWithNoContributionsQuery = `-- name: FetchUsersWithNoContributionsQuery :many
+SELECT
+  ua.ghUsername AS github_username,
+  ua.bounty,
+  COUNT(s.id) as solutions
+FROM
+  user_account ua
+  LEFT JOIN solutions s ON ua.ghUsername = s.ghUsername
+  AND s.is_merged = true
+WHERE
+  ua.status = TRUE
+  AND ua.ghUsername IS NOT NULL
+GROUP BY
+  ua.ghUsername,
+  ua.bounty
+HAVING
+  ua.bounty = 0
+  AND COUNT(s.id) = 0
+`
+
+type FetchUsersWithNoContributionsQueryRow struct {
+	GithubUsername pgtype.Text `json:"github_username"`
+	Bounty         int32       `json:"bounty"`
+	Solutions      int64       `json:"solutions"`
+}
+
+func (q *Queries) FetchUsersWithNoContributionsQuery(ctx context.Context, db DBTX) ([]FetchUsersWithNoContributionsQueryRow, error) {
+	rows, err := db.Query(ctx, fetchUsersWithNoContributionsQuery)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []FetchUsersWithNoContributionsQueryRow
+	for rows.Next() {
+		var i FetchUsersWithNoContributionsQueryRow
+		if err := rows.Scan(&i.GithubUsername, &i.Bounty, &i.Solutions); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
