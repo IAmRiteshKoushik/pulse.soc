@@ -169,7 +169,7 @@ func CompleteGitHubOAuth(c *gin.Context) {
 	}
 
 	loginUser, err := q.AddRefreshTokenQuery(ctx, tx, db.AddRefreshTokenQueryParams{
-		Ghusername:   userExist.Ghusername,
+		Email:        userExist.Email,
 		RefreshToken: pgtype.Text{String: refreshToken, Valid: true},
 	})
 	if err != nil {
