@@ -21,7 +21,7 @@ SET
   refresh_token = $1,
   updated_at = NOW()
 WHERE
-  ghUsername = $2
+  email = $2
   AND status = true
 RETURNING
   email,

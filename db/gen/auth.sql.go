@@ -17,7 +17,7 @@ SET
   refresh_token = $1,
   updated_at = NOW()
 WHERE
-  ghUsername = $2
+  email = $2
   AND status = true
 RETURNING
   email,
@@ -28,7 +28,7 @@ RETURNING
 
 type AddRefreshTokenQueryParams struct {
 	RefreshToken pgtype.Text `json:"refresh_token"`
-	Ghusername   pgtype.Text `json:"ghusername"`
+	Email        string      `json:"email"`
 }
 
 type AddRefreshTokenQueryRow struct {
@@ -39,7 +39,7 @@ type AddRefreshTokenQueryRow struct {
 }
 
 func (q *Queries) AddRefreshTokenQuery(ctx context.Context, db DBTX, arg AddRefreshTokenQueryParams) (AddRefreshTokenQueryRow, error) {
-	row := db.QueryRow(ctx, addRefreshTokenQuery, arg.RefreshToken, arg.Ghusername)
+	row := db.QueryRow(ctx, addRefreshTokenQuery, arg.RefreshToken, arg.Email)
 	var i AddRefreshTokenQueryRow
 	err := row.Scan(
 		&i.Email,
