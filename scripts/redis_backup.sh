@@ -6,21 +6,30 @@
 # --- Configuration ---
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-ENV_FILE="$PROJECT_ROOT/env.toml"
+CONFIG_FILE="$PROJECT_ROOT/config.toml"
 
-get_config_value() {
+get_valkey_config() {
   local key=$1
-  if [ -f "$ENV_FILE" ]; then
-    grep "^${key}[[:space:]]*=" "$ENV_FILE" | cut -d'=' -f2- | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'$//"
+  if [ -f "$CONFIG_FILE" ]; then
+    awk -v key="$key" '
+      /^\[valkey\]/ {in_section=1; next}
+      /^\[/ {in_section=0}
+      in_section && $0 ~ "^[[:space:]]*"key"[[:space:]]*=" {
+        sub(/^[^=]*=/, "");
+        gsub(/^[[:space:]]+|[[:space:]]+$|^"|"$|^\x27|\x27$/, "");
+        print;
+        exit
+      }
+    ' "$CONFIG_FILE"
   fi
 }
 
-REDIS_HOST=$(get_config_value "redis_host")
-REDIS_PORT=$(get_config_value "redis_port")
-REDIS_PASSWORD=$(get_config_value "redis_password")
-REDIS_USERNAME=$(get_config_value "redis_username")
+REDIS_HOST=$(get_valkey_config "host")
+REDIS_PORT=$(get_valkey_config "port")
+REDIS_PASSWORD=$(get_valkey_config "password")
+REDIS_USERNAME=$(get_valkey_config "username")
 
-# Set defaults if env.toml is missing or values are empty
+# Set defaults if config.toml is missing or values are empty
 REDIS_HOST="${REDIS_HOST:-localhost}"
 REDIS_PORT="${REDIS_PORT:-6379}"
 
