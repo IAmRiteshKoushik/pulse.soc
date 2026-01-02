@@ -8,30 +8,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 CONFIG_FILE="$PROJECT_ROOT/config.toml"
 
-get_valkey_config() {
-  local key=$1
-  if [ -f "$CONFIG_FILE" ]; then
-    awk -v key="$key" '
-      /^\[valkey\]/ {in_section=1; next}
-      /^\[/ {in_section=0}
-      in_section && $0 ~ "^[[:space:]]*"key"[[:space:]]*=" {
-        sub(/^[^=]*=/, "");
-        gsub(/^[[:space:]]+|[[:space:]]+$|^"|"$|^\x27|\x27$/, "");
-        print;
-        exit
-      }
-    ' "$CONFIG_FILE"
-  fi
-}
-
-REDIS_HOST=$(get_valkey_config "host")
-REDIS_PORT=$(get_valkey_config "port")
-REDIS_PASSWORD=$(get_valkey_config "password")
-REDIS_USERNAME=$(get_valkey_config "username")
-
 # Set defaults if config.toml is missing or values are empty
-REDIS_HOST="${REDIS_HOST:-localhost}"
-REDIS_PORT="${REDIS_PORT:-6379}"
+REDIS_HOST="localhost"
+REDIS_PORT="6379"
 
 # Directory where Redis saves its dump.rdb (Check your redis.conf 'dir' setting)
 REDIS_DATA_DIR="${REDIS_DATA_DIR:-/var/lib/redis}"
