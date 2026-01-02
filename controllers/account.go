@@ -15,17 +15,17 @@ import (
 )
 
 func FetchUserAccount(c *gin.Context) {
-	username, ok := pkg.GrabUsername(c)
-	if !ok {
+	username := c.Query("user")
+	if username == "" {
 		cmd.Log.Warn(
 			fmt.Sprintf(
-				"Username did not set in Gin-Context post Authentication at %s %s",
+				"Query param 'user' not provided at %s %s",
 				c.Request.Method,
 				c.FullPath(),
 			),
 		)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Oops! Something happened. Please try again later.",
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Query parameter 'user' is required.",
 		})
 		return
 	}
