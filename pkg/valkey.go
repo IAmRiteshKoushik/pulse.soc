@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
 	"strings"
 	"time"
 
@@ -81,12 +82,16 @@ func GetLeaderboard() ([]ParticipantGlobal, error) {
 
 		// The precision is 3 with the assumption that no one would cross
 		// 999 pull-requests in the entire duration of the program (4 months)
-		count := fmt.Sprintf("%v", participant.Score)
-		parts := strings.Split(count, ".")
+		score := participant.Score
+		bounty := int(score)
+		// To get the count, we subtract the integer part, multiply by 1000
+		// and round to handle precision issues.
+		count := int(math.Round((score - float64(bounty)) * 1000))
+
 		results = append(results, ParticipantGlobal{
 			Username: fmt.Sprintf("%v", participant.Member),
-			Bounty:   parts[0],
-			Count:    strings.TrimLeft(parts[1], "0"),
+			Bounty:   fmt.Sprintf("%d", bounty),
+			Count:    fmt.Sprintf("%d", count),
 		})
 	}
 	return results, nil
