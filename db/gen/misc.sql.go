@@ -75,7 +75,6 @@ GROUP BY
   ua.bounty
 HAVING
   ua.bounty = 0
-  AND COUNT(s.id) = 0
 `
 
 type FetchUsersWithNoContributionsQueryRow struct {

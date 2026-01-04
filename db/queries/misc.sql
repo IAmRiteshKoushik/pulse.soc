@@ -28,5 +28,4 @@ GROUP BY
   ua.ghUsername,
   ua.bounty
 HAVING
-  ua.bounty = 0
-  AND COUNT(s.id) = 0;
+  ua.bounty = 0;
